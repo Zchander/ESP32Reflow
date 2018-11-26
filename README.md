@@ -1,3 +1,5 @@
+Forked project as an attempt to support the ESP32 (Pico D4)
+
 ![Invent This, Invent That](schematics/IT2-logo.png)
 
 # ESPReflow
