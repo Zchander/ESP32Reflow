@@ -37,10 +37,15 @@ EasyEDA project page: https://easyeda.com/andrius.mikonis/ESPReflow-f4c523157afa
 ## Assigned pins
 
 ```
-#define thermoDO 13 // D7
-#define thermoCS 12 // D6
+#define thermoDO 12 // D7
+#define thermoCS 13 // D6
 #define thermoCLK 14 // D5
-#define relay 4 // D2
+#define RELAY 23
+#define LED_RED 32
+#define LED_GREEN 19
+#define LED_BLUE 22
+#define BUZZER_A 5
+#define BUZZER_B 4
 ```
 
 ## Modes of operation

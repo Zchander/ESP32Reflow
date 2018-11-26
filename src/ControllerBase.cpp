@@ -16,26 +16,24 @@ ControllerBase::ControllerBase(Config& cfg) :
   pidTemperature.SetMode(AUTOMATIC);
 	pidTemperature.SetOutputLimits(0, 1);
 	thermocouple.begin();
-	Wire.begin(SDA, SCL);
-	pca9536.begin(Wire);
-	pca9536.pinMode(RELAY, OUTPUT);
-	pca9536.pinMode(LED_RED, OUTPUT);
-	pca9536.pinMode(LED_GREEN, OUTPUT);
-	pca9536.pinMode(LED_BLUE, OUTPUT);
+	pinMode(RELAY, OUTPUT);
+	pinMode(LED_RED, OUTPUT);
+	pinMode(LED_BLUE, OUTPUT);
+	pinMode(LED_GREEN, OUTPUT);
 
-	pca9536.write(RELAY, LOW);
-	pca9536.write(LED_RED, LOW);
-	pca9536.write(LED_GREEN, LOW);
-	pca9536.write(LED_BLUE, LOW);
-	pca9536.write(LED_RED, HIGH);
+	digitalWrite(RELAY, LOW);
+	digitalWrite(LED_RED, LOW);
+	digitalWrite(LED_GREEN, LOW);
+	digitalWrite(LED_BLUE, LOW);
+	digitalWrite(LED_RED, HIGH);
 	delay(100);
-	pca9536.write(LED_GREEN, HIGH);
+	digitalWrite(LED_GREEN, HIGH);
 	delay(100);
-	pca9536.write(LED_BLUE, HIGH);
+	digitalWrite(LED_BLUE, HIGH);
 	delay(100);
-	pca9536.write(LED_RED, LOW);
-	pca9536.write(LED_GREEN, LOW);
-	pca9536.write(LED_BLUE, LOW);
+	digitalWrite(LED_RED, LOW);
+	digitalWrite(LED_GREEN, LOW);
+	digitalWrite(LED_BLUE, LOW);
 
 	_mode = _last_mode = INIT;
 	_temperature = 0;
@@ -49,10 +47,10 @@ ControllerBase::ControllerBase(Config& cfg) :
 
 	_heater = _last_heater = false;
 
-	pinMode(BUZZER_A, OUTPUT);
-	pinMode(BUZZER_B, OUTPUT);
+	//pinMode(BUZZER_A, OUTPUT);
+	//pinMode(BUZZER_B, OUTPUT);
 
-	tone(BUZZER_A, 440, 100);
+	//tone(BUZZER_A, 440, 100);
 
 	setPID("default");
 
@@ -110,8 +108,8 @@ void ControllerBase::loop(unsigned long now)
 
 	handle_safety(now);
 
-	pca9536.write(RELAY, _heater);
-	pca9536.write(LED_RED, _heater);
+	digitalWrite(RELAY, _heater);
+	digitalWrite(LED_RED, _heater);
 
 	if (_onHeater && _heater != _last_heater)
 		_onHeater(_heater);

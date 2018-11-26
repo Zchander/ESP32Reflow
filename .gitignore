@@ -32,9 +32,10 @@
 *.app
 .pioenvs
 .piolibdeps
+.vscode
 .clang_complete
 .gcc-flags.json
 
-wificonfig.h
+#wificonfig.h
 web-src-angular/node_modules/*
 web-src-angular/node_modules

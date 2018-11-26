@@ -1,5 +1,7 @@
-#include <EasyOTA.h>
+#include <XJM_EasyOTA.h>
 #include <ESPAsyncWebServer.h>
+#include <FS.h>
+#include <SPIFFS.h>
 #include <SPIFFSEditor.h>
 #include "ReflowController_v1.h"
 #include <ArduinoJson.h>
@@ -151,7 +153,8 @@ void send_data(AsyncWebSocketClient * client)
 void setup() {
 	Serial.begin(115200);
 
-	SPIFFS.begin();
+	// Seems we have to send an argument?
+	SPIFFS.begin(false);
 	config.load_config();
 	config.load_profiles();
 	config.setup_OTA();

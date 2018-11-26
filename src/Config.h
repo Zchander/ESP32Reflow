@@ -3,7 +3,9 @@
 
 #include <ArduinoJson.h>
 #include <ESPAsyncWebServer.h>
-#include <EasyOTA.h>
+#include <FS.h>
+#include <SPIFFS.h>
+#include <XJM_EasyOTA.h>
 #include <map>
 #include "wificonfig.h"
 
