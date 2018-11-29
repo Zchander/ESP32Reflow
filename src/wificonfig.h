@@ -1,3 +1,3 @@
-#define WIFI_SSID        "ssid"
-#define WIFI_PASSWORD    "passw"
+#define WIFI_SSID        "Reflow Test"
+#define WIFI_PASSWORD    "Reflow12345"
 #define ARDUINO_HOSTNAME "ReflowControl"

@@ -13,7 +13,7 @@ ControllerBase::ControllerBase(Config& cfg) :
 	_calI = 4/DEFAULT_TEMP_RISE_AFTER_OFF;
 
 	pidTemperature.SetSampleTime(config.measureInterval * 1000);
-  pidTemperature.SetMode(AUTOMATIC);
+  	pidTemperature.SetMode(AUTOMATIC);
 	pidTemperature.SetOutputLimits(0, 1);
 	thermocouple.begin();
 	pinMode(RELAY, OUTPUT);

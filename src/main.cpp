@@ -16,6 +16,8 @@ ControllerBase * last_controller = NULL;
 AsyncWebSocketClient * _client = NULL;
 Config config("/config.json", "/profiles.json");
 
+int APstate;
+
 void textThem(const char * text) {
 	int tryId = 0;
   for (int count = 0; count < ws.count();) {
@@ -164,9 +166,12 @@ void setup() {
 	server.serveStatic("/", SPIFFS, "/web").setDefaultFile("index.html");
 	// Heap for general Servertest
 	server.on("/heap", HTTP_GET, [](AsyncWebServerRequest *request) {
+
+		Serial.println("** DEBUG - main.cpp - server.on GET(/heap)");
 		request->send(200, "text/plain", String(ESP.getFreeHeap()));
 	});
 	server.on("/profiles", HTTP_GET, [](AsyncWebServerRequest *request) {
+		Serial.println("** DEBUG - main.cpp - server.on GET(/profile)");
 		AsyncWebServerResponse *response = request->beginResponse(SPIFFS, "/profiles.json");
 		//request->send(SPIFFS, "/profiles.json");
 		response->addHeader("Access-Control-Allow-Origin", "*");
@@ -175,6 +180,7 @@ void setup() {
 		request->send(response);
 	});
 	server.on("/config", HTTP_GET, [](AsyncWebServerRequest *request) {
+		Serial.println("** DEBUG - main.cpp - server.on GET(/config)");
 		AsyncWebServerResponse *response = request->beginResponse(SPIFFS, "/config.json");
 		//request->send(SPIFFS, "/profiles.json");
 		response->addHeader("Access-Control-Allow-Origin", "*");
@@ -241,6 +247,9 @@ void setup() {
 		}
 	});
 
+	APstate = 0;
+
+	Serial.println("** main - Something weird happens in server.begin()");
 	server.begin();
 	setupController(new ReflowController(config));
 
@@ -249,9 +258,18 @@ void setup() {
 
 void loop() {
 	unsigned long now = millis();
-
-  config.OTA->loop(now);
-
+	int state = (int)config.OTA->state();
+	if (state != APstate) {
+		Serial.print("** DEBUG Main - IPState ");
+		Serial.print(APstate);
+		Serial.print(" - ");
+		Serial.println(state);
+		APstate = state;
+		// Now we need a way to re-attach the server to the IP?
+		
+		return;
+	}
+  	config.OTA->loop(now);
 	// since this is single core, we don't care about
 	// synchronization
 	if (controller)

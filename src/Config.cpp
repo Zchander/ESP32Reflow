@@ -148,6 +148,7 @@ bool Config::setup_OTA() {
 	OTA = new EasyOTA(hostname);
 
 	std::map<String, String>::iterator I = networks.begin();
+	Serial.println("** Config.cpp - setup_OTA iterate networks");
 	while (I != networks.end()) {
 		OTA->addAP(I->first, I->second);
 		Serial.println("Add network: " + I->first);
