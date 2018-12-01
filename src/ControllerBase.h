@@ -11,7 +11,7 @@
 #define thermoCS 13 // D6
 #define thermoCLK 14 // D5
 #define RELAY 23
-#define LED_RED 32
+#define LED_RED 21
 #define LED_GREEN 19
 #define LED_BLUE 22
 #define BUZZER_A 5

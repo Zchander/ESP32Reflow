@@ -16,6 +16,7 @@ ControllerBase::ControllerBase(Config& cfg) :
   	pidTemperature.SetMode(AUTOMATIC);
 	pidTemperature.SetOutputLimits(0, 1);
 	thermocouple.begin();
+	
 	pinMode(RELAY, OUTPUT);
 	pinMode(LED_RED, OUTPUT);
 	pinMode(LED_BLUE, OUTPUT);

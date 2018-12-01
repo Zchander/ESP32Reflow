@@ -16,7 +16,6 @@ ControllerBase * last_controller = NULL;
 AsyncWebSocketClient * _client = NULL;
 Config config("/config.json", "/profiles.json");
 
-int APstate;
 
 void textThem(const char * text) {
 	int tryId = 0;
@@ -151,7 +150,6 @@ void send_data(AsyncWebSocketClient * client)
 	textThem(root, client);
 }
 
-
 void setup() {
 	Serial.begin(115200);
 
@@ -164,6 +162,7 @@ void setup() {
 	server.addHandler(&ws);
 	server.addHandler(&events);
 	server.serveStatic("/", SPIFFS, "/web").setDefaultFile("index.html");
+
 	// Heap for general Servertest
 	server.on("/heap", HTTP_GET, [](AsyncWebServerRequest *request) {
 
@@ -211,6 +210,8 @@ void setup() {
 
 			controller->watchdog(millis());
 
+			Serial.print("** debug - main - onEvent cmd: ");
+			Serial.println(cmd);
 			if (strcmp(cmd, "WATCHDOG") == 0) {
 			} else if (strncmp(cmd, "profile:", 8) == 0) {
 				controller->profile(String(cmd + 8));
@@ -246,10 +247,13 @@ void setup() {
 			//controller->mode(ControllerBase::ERROR_OFF);
 		}
 	});
-
-	APstate = 0;
-
-	Serial.println("** main - Something weird happens in server.begin()");
+	uint64_t chipid;
+	chipid = ESP.getEfuseMac();//The chip ID is essentially its MAC address(length: 6 bytes).
+	Serial.printf("ESP32 Chip ID = %04X",(uint16_t)(chipid>>32));//print High 2 bytes
+	Serial.printf("%08X\n",(uint32_t)chipid);//print Low 4bytes.
+	delay(3000);
+	
+	Serial.println("** debug - main - Starting actual WebServer");
 	server.begin();
 	setupController(new ReflowController(config));
 
@@ -258,17 +262,7 @@ void setup() {
 
 void loop() {
 	unsigned long now = millis();
-	int state = (int)config.OTA->state();
-	if (state != APstate) {
-		Serial.print("** DEBUG Main - IPState ");
-		Serial.print(APstate);
-		Serial.print(" - ");
-		Serial.println(state);
-		APstate = state;
-		// Now we need a way to re-attach the server to the IP?
-		
-		return;
-	}
+
   	config.OTA->loop(now);
 	// since this is single core, we don't care about
 	// synchronization
