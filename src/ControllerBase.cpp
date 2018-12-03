@@ -27,11 +27,15 @@ ControllerBase::ControllerBase(Config& cfg) :
 	digitalWrite(LED_GREEN, LOW);
 	digitalWrite(LED_BLUE, LOW);
 	digitalWrite(LED_RED, HIGH);
-	delay(100);
+	delay(300);
 	digitalWrite(LED_GREEN, HIGH);
-	delay(100);
+	digitalWrite(LED_RED, LOW);
+	digitalWrite(LED_BLUE, LOW);
+	delay(300);
 	digitalWrite(LED_BLUE, HIGH);
-	delay(100);
+	digitalWrite(LED_RED, LOW);
+	digitalWrite(LED_BLUE, LOW);
+	delay(300);
 	digitalWrite(LED_RED, LOW);
 	digitalWrite(LED_GREEN, LOW);
 	digitalWrite(LED_BLUE, LOW);
@@ -279,6 +283,7 @@ void ControllerBase::handle_safety(unsigned long now) {
 		mode(ERROR_OFF);
 		_heater = false;
 		callMessage("ERROR: Heater time limit exceeded (%i seconds)", (int)(MAX_ON_TIME / 1000));
+		return;
 	}
 
 	if (_temperature > MAX_TEMPERATURE)
@@ -286,24 +291,40 @@ void ControllerBase::handle_safety(unsigned long now) {
 		mode(ERROR_OFF);
 		_heater = false;
 		callMessage("ERROR: Temperature limit exceeded");
+		return;
 	}
 
 	if (isnan(_temperature)) {
 		mode(ERROR_OFF);
 		_heater = false;
 		callMessage("ERROR: Error reading temperature. Check the probe!");
+		return;
 	}
 
-	if (now - _watchdog > WATCHDOG_TIMEOUT) {
+	long _calc = now - _watchdog;
+	// We should swap now and _watchdog? As loggin showed a negative value?
+	//if (now - _watchdog > WATCHDOG_TIMEOUT) {
+	if (_calc > WATCHDOG_TIMEOUT) {
 		mode(ERROR_OFF);
 		_heater = false;
+		Serial.print("** debug - ControllerBase - handle_safety - _calc : ");
+		Serial.println(_calc);
+		Serial.print("** debug - ControllerBase - handle_safety - now             : ");
+		Serial.println(now);
+		Serial.print("** debug - ControllerBase - handle_safety - _wachdog        : ");
+		Serial.println(_watchdog);
+		Serial.print("** debug - ControllerBase - handle_safety - WATCHDOG_TIMEOUT: ");
+		Serial.println(WATCHDOG_TIMEOUT);
 		callMessage("ERROR: Watchdog timeout. Check connectivity!");
+		delay(10000); 		// Wait 10 seconds
+		return;
 	}
-return;
+
 	if (now - _start_time > MIN_TEMP_RISE_TIME && _temperature - _readings[0] < MIN_TEMP_RISE && _temperature < SAFE_TEMPERATURE) {
 		mode(ERROR_OFF);
 		_heater = false;
 		callMessage("ERROR: Temperature did not rise for %i seconds!",  (int)(MIN_TEMP_RISE_TIME / 1000));
+		return;
 	}
 }
 
